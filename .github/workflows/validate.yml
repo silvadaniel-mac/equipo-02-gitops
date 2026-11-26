@@ -1,0 +1,31 @@
+name: GitOps manifests
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  manifests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.32.2
+      - name: Render both environments
+        run: |
+          mkdir -p artifacts
+          kubectl kustomize overlays/dev > artifacts/dev.yaml
+          kubectl kustomize overlays/prod > artifacts/prod.yaml
+          test -s artifacts/dev.yaml
+          test -s artifacts/prod.yaml
+      - name: Check environment isolation, immutable image and security settings
+        run: |
+          python3 -m pip install PyYAML==6.0.2
+          python3 scripts/validate-manifests.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gitops-manifests-${{ github.sha }}
+          path: artifacts/
