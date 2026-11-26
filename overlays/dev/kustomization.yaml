@@ -9,4 +9,4 @@ replicas:
     count: 1
 images:
   - name: ghcr.io/silvadaniel-mac/aulaviva-api
-    digest: sha256:b2049bca14f19d1fa4357cc5fd90cae86b8c46231dcb82d83cf794716c9b1ae7
+    digest: sha256:9a8222f644170a25fc87e7e141d30ba11ff188fc196671e4fc56024719b98b13
